@@ -5,31 +5,40 @@ declare(strict_types=1);
 namespace DesignPatterns\Structural\Adapter;
 
 /**
- * This is the adapter here. Notice it implements Book,
- * therefore you don't have to change the code of the client which is using a Book
+ * A classe adaptadora permite que o cliente utilize um leitor digital (EBook) 
+ * como se fosse um livro físico tradicional (Book).
  */
 class EBookAdapter implements Book
 {
-    public function __construct(protected EBook $eBook)
+    /**
+     * Recebe a instância do sistema externo incompatível via composição.
+     */
+    public function __construct(private EBook $eBook)
     {
     }
 
     /**
-     * This class makes the proper translation from one interface to another.
+     * Adapta a ação padrão de abrir o livro para o comando de 
+     * desbloquear a tela do leitor digital.
      */
-    public function open()
+    public function open(): void
     {
         $this->eBook->unlock();
     }
 
-    public function turnPage()
+    /**
+     * Adapta a ação de virar a página para o comando de 
+     * avançar para a próxima tela no leitor digital.
+     */
+    public function turnPage(): void
     {
         $this->eBook->pressNext();
     }
 
     /**
-     * notice the adapted behavior here: EBook::getPage() will return two integers, but Book
-     * supports only a current page getter, so we adapt the behavior here
+     * Resolve a incompatibilidade do tipo de retorno.
+     * O contrato de Book exige um inteiro, mas EBook retorna um array.
+     * Esta função extrai a página atual e a retorna no formato correto.
      */
     public function getPage(): int
     {
